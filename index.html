@@ -118,6 +118,7 @@
       textCounter = 0
       questionNumber = 0
       wrongTypingCount = 0
+      answeredQuestionsCount = 0
       yourType.innerHTML = ""
       questionText.style.display = "block"
       yourTypeText.style.display = "block"
@@ -131,13 +132,29 @@
 
       wrongText.style.display = "none"
 
-      if (questions[questionNumber].length <= (textCounter + 1)) {
-        if (answeredQuestionsCount < 3) {
+      console.log({ answeredQuestionsCount })
+      console.log({ textCounter, questionNumber })
+      console.log({ targetText: questions[questionNumber][textCounter], key: e.key })
+
+      if (questions[questionNumber].length > (textCounter + 1)) {
+        if (e.key == questions[questionNumber][textCounter]) {
+          // 正解の文字がタイプされた時
+          textCounter += 1
+        } else {
+          // 間違った文字がタイプされた時
+          wrongText.style.display = "block"
+          wrongTypingCount += 1
+          wrongTypingCountP.textContent = wrongTypingCount
+        }
+      } else {
+        if (answeredQuestionsCount < 5) {
+          // 正解数が５問以下の場合は、次の問題にうつる
           questionNumber = setQuestionNumber()
           textCounter = 0
           answeredQuestionsCount += 1
           questionText.innerHTML = questions[questionNumber]
         } else {
+          // 正解数が５問になったら、ゲームを終了する
           endTime = new Date()
           calculateTime()
           startButton.style.display = "block"
@@ -145,14 +162,6 @@
           questionText.style.display = "none"
           yourTypeText.style.display = "none"
           yourType.style.display = "none"
-        }
-      } else {
-        if (e.key == questions[questionNumber][textCounter]) {
-          textCounter += 1
-        } else {
-          wrongText.style.display = "block"
-          wrongTypingCount += 1
-          wrongTypingCountP.textContent = wrongTypingCount
         }
       }
       yourType.innerHTML = e.key
